@@ -192,4 +192,102 @@ import { Router } from '@angular/router';
     `,
   ],
 })
-export class CaptchaComponent {}
+export class CaptchaComponent {
+  currentStage = 1;
+  totalStages = 3;
+  selectedImages: number[] = [];
+
+  challenges = [
+    {
+      type: 'image',
+      instruction: 'Select all images containing traffic lights',
+      images: [
+        'https://picsum.photos/150/150?random=1',
+        'https://picsum.photos/150/150?random=2',
+        'https://picsum.photos/150/150?random=3',
+        'https://picsum.photos/150/150?random=4',
+        'https://picsum.photos/150/150?random=5',
+        'https://picsum.photos/150/150?random=6',
+        'https://picsum.photos/150/150?random=7',
+        'https://picsum.photos/150/150?random=8',
+        'https://picsum.photos/150/150?random=9',
+      ],
+      correctAnswers: [1, 4, 7],
+    },
+    {
+      type: 'image',
+      instruction: 'Select all images with cars',
+      images: [
+        'https://picsum.photos/150/150?random=10',
+        'https://picsum.photos/150/150?random=11',
+        'https://picsum.photos/150/150?random=12',
+        'https://picsum.photos/150/150?random=13',
+        'https://picsum.photos/150/150?random=14',
+        'https://picsum.photos/150/150?random=15',
+        'https://picsum.photos/150/150?random=16',
+        'https://picsum.photos/150/150?random=17',
+        'https://picsum.photos/150/150?random=18',
+      ],
+      correctAnswers: [0, 3, 8],
+    },
+    {
+      type: 'image',
+      instruction: 'Select all images with buildings',
+      images: [
+        'https://picsum.photos/150/150?random=19',
+        'https://picsum.photos/150/150?random=20',
+        'https://picsum.photos/150/150?random=21',
+        'https://picsum.photos/150/150?random=22',
+        'https://picsum.photos/150/150?random=23',
+        'https://picsum.photos/150/150?random=24',
+        'https://picsum.photos/150/150?random=25',
+        'https://picsum.photos/150/150?random=26',
+        'https://picsum.photos/150/150?random=27',
+      ],
+      correctAnswers: [2, 5, 6],
+    },
+  ];
+
+  constructor(private router: Router) {}
+
+  get currentChallenge() {
+    return this.challenges[this.currentStage - 1];
+  }
+
+  get progressPercentage() {
+    return (this.currentStage / this.totalStages) * 100;
+  }
+
+  get isLastStage() {
+    return this.currentStage === this.totalStages;
+  }
+
+  toggleImageSelection(index: number) {
+    const selectedIndex = this.selectedImages.indexOf(index);
+    if (selectedIndex > -1) {
+      this.selectedImages.splice(selectedIndex, 1);
+    } else {
+      this.selectedImages.push(index);
+    }
+  }
+
+  isCurrentChallengeValid() {
+    return this.selectedImages.length > 0;
+  }
+
+  previousChallenge() {
+    if (this.currentStage > 1) {
+      this.currentStage--;
+      this.selectedImages = [];
+    }
+  }
+
+  nextChallenge() {
+    if (this.isLastStage) {
+      this.router.navigate(['/results']);
+    } else {
+      this.currentStage++;
+      this.selectedImages = [];
+    }
+  }
+}
