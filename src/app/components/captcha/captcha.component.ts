@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Challenge, ChallengeType, ChallengeResult, UserProgress } from '../../models';
 
 @Component({
   selector: 'app-captcha',
@@ -19,7 +20,7 @@ import { Router } from '@angular/router';
         </div>
 
         <div class="challenge-content">
-          <div class="image-grid" *ngIf="currentChallenge.type === 'image'">
+          <div class="image-grid" *ngIf="currentChallenge.type === ChallengeType.IMAGE_SELECTION">
             <div
               *ngFor="let image of currentChallenge.images; let i = index"
               class="image-item"
@@ -193,13 +194,15 @@ import { Router } from '@angular/router';
   ],
 })
 export class CaptchaComponent {
+  ChallengeType = ChallengeType; // Make enum available in template
   currentStage = 1;
   totalStages = 3;
   selectedImages: number[] = [];
 
-  challenges = [
+  challenges: Challenge[] = [
     {
-      type: 'image',
+      id: 'challenge-1',
+      type: ChallengeType.IMAGE_SELECTION,
       instruction: 'Select all images containing traffic lights',
       images: [
         'https://picsum.photos/150/150?random=1',
@@ -215,7 +218,8 @@ export class CaptchaComponent {
       correctAnswers: [1, 4, 7],
     },
     {
-      type: 'image',
+      id: 'challenge-2',
+      type: ChallengeType.IMAGE_SELECTION,
       instruction: 'Select all images with cars',
       images: [
         'https://picsum.photos/150/150?random=10',
@@ -231,7 +235,8 @@ export class CaptchaComponent {
       correctAnswers: [0, 3, 8],
     },
     {
-      type: 'image',
+      id: 'challenge-3',
+      type: ChallengeType.IMAGE_SELECTION,
       instruction: 'Select all images with buildings',
       images: [
         'https://picsum.photos/150/150?random=19',
@@ -247,6 +252,8 @@ export class CaptchaComponent {
       correctAnswers: [2, 5, 6],
     },
   ];
+
+  results: ChallengeResult[] = [];
 
   constructor(private router: Router) {}
 
