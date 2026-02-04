@@ -60,29 +60,92 @@ export class ChallengeService {
     }
   ];
 
+  private mathChallenges: Challenge[] = [
+    {
+      id: 'math-1',
+      type: ChallengeType.MATH,
+      instruction: 'Solve the math problem',
+      question: 'What is 7 + 15?',
+      correctAnswers: 22
+    },
+    {
+      id: 'math-2',
+      type: ChallengeType.MATH,
+      instruction: 'Solve the math problem',
+      question: 'What is 12 × 3?',
+      correctAnswers: 36
+    },
+    {
+      id: 'math-3',
+      type: ChallengeType.MATH,
+      instruction: 'Solve the math problem',
+      question: 'What is 45 - 18?',
+      correctAnswers: 27
+    }
+  ];
+
+  private textChallenges: Challenge[] = [
+    {
+      id: 'text-1',
+      type: ChallengeType.TEXT_INPUT,
+      instruction: 'Type the word shown below',
+      images: ['https://via.placeholder.com/200x80/333333/ffffff?text=VERIFY'],
+      correctAnswers: 'VERIFY'
+    },
+    {
+      id: 'text-2',
+      type: ChallengeType.TEXT_INPUT,
+      instruction: 'Type the word shown below',
+      images: ['https://via.placeholder.com/200x80/333333/ffffff?text=SECURE'],
+      correctAnswers: 'SECURE'
+    }
+  ];
+
   getChallenges(): Challenge[] {
-    return [...this.imageSelectionChallenges];
-  }
-
-  validateAnswer(challenge: Challenge, userAnswer: number[]): boolean {
-    if (challenge.type !== ChallengeType.IMAGE_SELECTION) {
-      return false;
-    }
-
-    const correctAnswers = challenge.correctAnswers as number[];
+    const allChallenges = [
+      ...this.imageSelectionChallenges,
+      ...this.mathChallenges,
+      ...this.textChallenges
+    ];
     
-    // Check if arrays have same length and same elements
-    if (userAnswer.length !== correctAnswers.length) {
-      return false;
-    }
-
-    const sortedUserAnswer = [...userAnswer].sort((a, b) => a - b);
-    const sortedCorrectAnswers = [...correctAnswers].sort((a, b) => a - b);
-
-    return sortedUserAnswer.every((answer, index) => answer === sortedCorrectAnswers[index]);
+    // Shuffle and return 4 random challenges
+    return this.shuffleArray(allChallenges).slice(0, 4);
   }
 
-  createResult(challenge: Challenge, userAnswer: number[]): ChallengeResult {
+  private shuffleArray<T>(array: T[]): T[] {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
+
+  validateAnswer(challenge: Challenge, userAnswer: number[] | string | number): boolean {
+    if (challenge.type === ChallengeType.IMAGE_SELECTION) {
+      const correctAnswers = challenge.correctAnswers as number[];
+      const userImageAnswer = userAnswer as number[];
+      
+      if (userImageAnswer.length !== correctAnswers.length) return false;
+      
+      const sortedUserAnswer = [...userImageAnswer].sort((a, b) => a - b);
+      const sortedCorrectAnswers = [...correctAnswers].sort((a, b) => a - b);
+      
+      return sortedUserAnswer.every((answer, index) => answer === sortedCorrectAnswers[index]);
+    }
+    
+    if (challenge.type === ChallengeType.MATH) {
+      return Number(userAnswer) === Number(challenge.correctAnswers);
+    }
+    
+    if (challenge.type === ChallengeType.TEXT_INPUT) {
+      return String(userAnswer).toUpperCase() === String(challenge.correctAnswers).toUpperCase();
+    }
+    
+    return false;
+  }
+
+  createResult(challenge: Challenge, userAnswer: number[] | string | number): ChallengeResult {
     return {
       challengeId: challenge.id,
       userAnswer,
