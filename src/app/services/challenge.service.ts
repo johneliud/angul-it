@@ -12,13 +12,13 @@ export class ChallengeService {
       type: ChallengeType.IMAGE_SELECTION,
       instruction: 'Select all images containing traffic lights',
       images: [
-        'https://images.pexels.com/photos/2846217/pexels-photo-2846217.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop', // traffic light
+        'https://images.pexels.com/photos/34597052/pexels-photo-34597052.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop', // traffic light
         'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // building
         'https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // car
-        'https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop', // traffic light
+        'https://images.pexels.com/photos/35380639/pexels-photo-35380639.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop', // traffic light
         'https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // tree
         'https://images.pexels.com/photos/315938/pexels-photo-315938.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // road
-        'https://images.pexels.com/photos/2846217/pexels-photo-2846217.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop', // traffic light
+        'https://images.pexels.com/photos/147430/pexels-photo-147430.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop', // traffic light
         'https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // mountain
         'https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop'    // park
       ],
