@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Challenge, ChallengeType, ChallengeResult } from '../../models';
 import { ChallengeService } from '../../services/challenge.service';
@@ -7,7 +8,7 @@ import { ChallengeService } from '../../services/challenge.service';
 @Component({
   selector: 'app-captcha',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   template: `
     <div class="page-container">
       <div class="captcha-card">
@@ -32,11 +33,33 @@ import { ChallengeService } from '../../services/challenge.service';
               <div class="selection-overlay" *ngIf="selectedImages.includes(i)"></div>
             </div>
           </div>
+
+          <div class="math-challenge" *ngIf="currentChallenge.type === ChallengeType.MATH">
+            <h3>{{currentChallenge.question}}</h3>
+            <input 
+              type="number" 
+              [(ngModel)]="mathAnswer" 
+              placeholder="Enter your answer"
+              class="math-input"
+            >
+          </div>
+
+          <div class="text-challenge" *ngIf="currentChallenge.type === ChallengeType.TEXT_INPUT">
+            <img [src]="currentChallenge.images![0]" alt="Text to type" class="text-image">
+            <input 
+              type="text" 
+              [(ngModel)]="textAnswer" 
+              placeholder="Type the word shown above"
+              class="text-input"
+            >
+          </div>
         </div>
 
         <div class="navigation">
           <div class="validation-error" *ngIf="showValidationError">
-            Please select at least one image to continue
+            <span *ngIf="currentChallenge.type === ChallengeType.IMAGE_SELECTION">Please select at least one image to continue</span>
+            <span *ngIf="currentChallenge.type === ChallengeType.MATH">Please enter an answer to continue</span>
+            <span *ngIf="currentChallenge.type === ChallengeType.TEXT_INPUT">Please type the word to continue</span>
           </div>
           
           <div class="nav-buttons">
@@ -198,6 +221,56 @@ import { ChallengeService } from '../../services/challenge.service';
       cursor: not-allowed;
     }
 
+    .math-challenge {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .math-challenge h3 {
+      color: var(--text);
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+    }
+
+    .math-input {
+      width: 200px;
+      padding: 12px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+
+    .math-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .text-challenge {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .text-image {
+      display: block;
+      margin: 0 auto 16px auto;
+      border-radius: 6px;
+    }
+
+    .text-input {
+      width: 250px;
+      padding: 12px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
     @media (max-width: 768px) {
       .captcha-card {
         padding: 24px;
@@ -220,8 +293,10 @@ import { ChallengeService } from '../../services/challenge.service';
 export class CaptchaComponent implements OnInit {
   ChallengeType = ChallengeType;
   currentStage = 1;
-  totalStages = 3;
+  totalStages = 4;
   selectedImages: number[] = [];
+  mathAnswer: number | null = null;
+  textAnswer: string = '';
   challenges: Challenge[] = [];
   results: ChallengeResult[] = [];
   showValidationError = false;
@@ -259,13 +334,41 @@ export class CaptchaComponent implements OnInit {
   }
 
   isCurrentChallengeValid() {
-    return this.selectedImages.length > 0;
+    if (this.currentChallenge.type === ChallengeType.IMAGE_SELECTION) {
+      return this.selectedImages.length > 0;
+    }
+    if (this.currentChallenge.type === ChallengeType.MATH) {
+      return this.mathAnswer !== null && this.mathAnswer !== undefined;
+    }
+    if (this.currentChallenge.type === ChallengeType.TEXT_INPUT) {
+      return this.textAnswer.trim().length > 0;
+    }
+    return false;
+  }
+
+  getCurrentAnswer(): number[] | string | number {
+    if (this.currentChallenge.type === ChallengeType.IMAGE_SELECTION) {
+      return [...this.selectedImages];
+    }
+    if (this.currentChallenge.type === ChallengeType.MATH) {
+      return this.mathAnswer!;
+    }
+    if (this.currentChallenge.type === ChallengeType.TEXT_INPUT) {
+      return this.textAnswer.trim();
+    }
+    return [];
+  }
+
+  resetCurrentAnswer() {
+    this.selectedImages = [];
+    this.mathAnswer = null;
+    this.textAnswer = '';
   }
 
   previousChallenge() {
     if (this.currentStage > 1) {
       this.currentStage--;
-      this.selectedImages = [];
+      this.resetCurrentAnswer();
       this.showValidationError = false;
     }
   }
@@ -278,7 +381,7 @@ export class CaptchaComponent implements OnInit {
 
     const result = this.challengeService.createResult(
       this.currentChallenge,
-      [...this.selectedImages]
+      this.getCurrentAnswer()
     );
     this.results.push(result);
 
@@ -287,7 +390,7 @@ export class CaptchaComponent implements OnInit {
       this.router.navigate(['/results']);
     } else {
       this.currentStage++;
-      this.selectedImages = [];
+      this.resetCurrentAnswer();
       this.showValidationError = false;
     }
   }
