@@ -46,3 +46,6 @@ Thumbs.db
 # Guide directory
 /guide/
 /docs/
+
+# Secrets
+src/environments/
