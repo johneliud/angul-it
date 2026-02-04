@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ChallengeResult } from '../../models';
 
 @Component({
   selector: 'app-result',
@@ -17,7 +18,7 @@ import { Router } from '@angular/router';
         <div class="score-section">
           <div class="score-display">
             <span class="score-number">{{score}}</span>
-            <span class="score-total">/ {{totalChallenges}}</span>
+            <span class="score-total"> / {{totalChallenges}}</span>
           </div>
           <p class="score-percentage">{{scorePercentage}}% Success Rate</p>
         </div>
@@ -27,10 +28,10 @@ import { Router } from '@angular/router';
           <div class="result-item" *ngFor="let result of challengeResults; let i = index">
             <div class="result-info">
               <span class="challenge-number">Challenge {{i + 1}}</span>
-              <span class="challenge-description">{{result.description}}</span>
+              <span class="challenge-description">{{getChallengeDescription(result.challengeId)}}</span>
             </div>
-            <div class="result-status" [class.success]="result.success" [class.failure]="!result.success">
-              {{result.success ? '' : ''}}
+            <div class="result-status" [class.success]="result.isCorrect" [class.failure]="!result.isCorrect">
+              {{result.isCorrect ? '' : ''}}
             </div>
           </div>
         </div>
@@ -193,36 +194,47 @@ import { Router } from '@angular/router';
     }
   `]
 })
-export class ResultComponent {
-  totalChallenges = 3;
-  score = 2; // Mock score - will be replaced with actual data later
-  
-  challengeResults = [
-    {
-      description: 'Select all images containing traffic lights',
-      success: true
-    },
-    {
-      description: 'Select all images with cars', 
-      success: true
-    },
-    {
-      description: 'Select all images with buildings',
-      success: false
-    }
-  ];
+export class ResultComponent implements OnInit {
+  challengeResults: ChallengeResult[] = [];
+  totalChallenges = 0;
+  score = 0;
 
   constructor(private router: Router) {}
+
+  ngOnInit() {
+    const storedResults = sessionStorage.getItem('challengeResults');
+    if (storedResults) {
+      this.challengeResults = JSON.parse(storedResults);
+      this.totalChallenges = this.challengeResults.length;
+      this.score = this.challengeResults.filter(result => result.isCorrect).length;
+    } else {
+      console.error('No challenge results found');
+    }
+  }
 
   get scorePercentage() {
     return Math.round((this.score / this.totalChallenges) * 100);
   }
 
+  getChallengeDescription(challengeId: string): string {
+    const descriptions: { [key: string]: string } = {
+      'traffic-lights-1': 'Select all images containing traffic lights',
+      'cars-1': 'Select all images with cars',
+      'buildings-1': 'Select all images with buildings',
+      'challenge-1': 'Select all images containing traffic lights',
+      'challenge-2': 'Select all images with cars', 
+      'challenge-3': 'Select all images with buildings'
+    };
+    return descriptions[challengeId] || 'Image selection challenge';
+  }
+
   goHome() {
+    sessionStorage.removeItem('challengeResults');
     this.router.navigate(['/home']);
   }
 
   startNewChallenge() {
+    sessionStorage.removeItem('challengeResults');
     this.router.navigate(['/captcha']);
   }
 }
