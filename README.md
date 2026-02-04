@@ -1,6 +1,37 @@
-# AngulIt
+# AngulIt - Multi-Stage CAPTCHA Application
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.0.
+
+## Project Overview
+
+AngulIt is a comprehensive Angular application that implements a multi-stage CAPTCHA challenge system. This project serves as a learning platform for Angular development, covering essential concepts like component architecture, state management, routing, and form validation.
+
+### Features
+- Multi-stage CAPTCHA challenges (image selection, math problems, text input)
+- State management with NgRx
+- Form validation and user input handling
+- Progress persistence across page refreshes
+- Route guards for secure navigation
+- Responsive design with animations
+
+### Learning Objectives
+- Master Angular component development
+- Understand state management patterns
+- Implement reactive forms and validation
+- Configure routing and navigation guards
+- Apply Angular best practices and testing
+
+## Documentation
+
+**For detailed learning materials and step-by-step implementation guides, see the [Documentation](./docs/README.md).**
+
+The `/docs` directory contains comprehensive documentation for each issue implementation, including:
+- Angular concepts explained
+- Code examples and best practices
+- Troubleshooting guides
+- Learning resources
+
+## Quick Start
 
 ## Development server
 
