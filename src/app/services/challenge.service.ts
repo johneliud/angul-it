@@ -60,29 +60,116 @@ export class ChallengeService {
     }
   ];
 
-  getChallenges(): Challenge[] {
-    return [...this.imageSelectionChallenges];
+  private mathChallenges: Challenge[] = [];
+
+  constructor() {
+    this.mathChallenges = this.generateMathChallenges(3);
   }
 
-  validateAnswer(challenge: Challenge, userAnswer: number[]): boolean {
-    if (challenge.type !== ChallengeType.IMAGE_SELECTION) {
-      return false;
-    }
-
-    const correctAnswers = challenge.correctAnswers as number[];
+  private generateMathChallenges(count: number): Challenge[] {
+    const challenges: Challenge[] = [];
+    const operators = ['+', '-', '×'];
     
-    // Check if arrays have same length and same elements
-    if (userAnswer.length !== correctAnswers.length) {
-      return false;
+    for (let i = 0; i < count; i++) {
+      const num1 = Math.floor(Math.random() * 100) + 1;
+      const num2 = Math.floor(Math.random() * 100) + 1;
+      const operator = operators[Math.floor(Math.random() * operators.length)];
+      
+      let answer: number;
+      let question: string;
+      
+      switch (operator) {
+        case '+':
+          answer = num1 + num2;
+          question = `What is ${num1} + ${num2}?`;
+          break;
+        case '-':
+          answer = num1 - num2;
+          question = `What is ${num1} - ${num2}?`;
+          break;
+        case '×':
+          answer = num1 * num2;
+          question = `What is ${num1} × ${num2}?`;
+          break;
+        default:
+          answer = num1 + num2;
+          question = `What is ${num1} + ${num2}?`;
+      }
+      
+      challenges.push({
+        id: `math-${i + 1}`,
+        type: ChallengeType.MATH,
+        instruction: 'Solve the math problem',
+        question,
+        correctAnswers: answer
+      });
     }
-
-    const sortedUserAnswer = [...userAnswer].sort((a, b) => a - b);
-    const sortedCorrectAnswers = [...correctAnswers].sort((a, b) => a - b);
-
-    return sortedUserAnswer.every((answer, index) => answer === sortedCorrectAnswers[index]);
+    
+    return challenges;
   }
 
-  createResult(challenge: Challenge, userAnswer: number[]): ChallengeResult {
+  private textChallenges: Challenge[] = [
+    {
+      id: 'text-1',
+      type: ChallengeType.TEXT_INPUT,
+      instruction: 'Type the word shown below',
+      images: ['https://via.placeholder.com/200x80/333333/ffffff?text=VERIFY'],
+      correctAnswers: 'VERIFY'
+    },
+    {
+      id: 'text-2',
+      type: ChallengeType.TEXT_INPUT,
+      instruction: 'Type the word shown below',
+      images: ['https://via.placeholder.com/200x80/333333/ffffff?text=SECURE'],
+      correctAnswers: 'SECURE'
+    }
+  ];
+
+  getChallenges(): Challenge[] {
+    const allChallenges = [
+      ...this.imageSelectionChallenges,
+      ...this.mathChallenges,
+      ...this.textChallenges
+    ];
+    
+    // Shuffle and return 4 random challenges
+    return this.shuffleArray(allChallenges).slice(0, 4);
+  }
+
+  private shuffleArray<T>(array: T[]): T[] {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
+
+  validateAnswer(challenge: Challenge, userAnswer: number[] | string | number): boolean {
+    if (challenge.type === ChallengeType.IMAGE_SELECTION) {
+      const correctAnswers = challenge.correctAnswers as number[];
+      const userImageAnswer = userAnswer as number[];
+      
+      if (userImageAnswer.length !== correctAnswers.length) return false;
+      
+      const sortedUserAnswer = [...userImageAnswer].sort((a, b) => a - b);
+      const sortedCorrectAnswers = [...correctAnswers].sort((a, b) => a - b);
+      
+      return sortedUserAnswer.every((answer, index) => answer === sortedCorrectAnswers[index]);
+    }
+    
+    if (challenge.type === ChallengeType.MATH) {
+      return Number(userAnswer) === Number(challenge.correctAnswers);
+    }
+    
+    if (challenge.type === ChallengeType.TEXT_INPUT) {
+      return String(userAnswer).toUpperCase() === String(challenge.correctAnswers).toUpperCase();
+    }
+    
+    return false;
+  }
+
+  createResult(challenge: Challenge, userAnswer: number[] | string | number): ChallengeResult {
     return {
       challengeId: challenge.id,
       userAnswer,
