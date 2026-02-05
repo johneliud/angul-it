@@ -60,29 +60,53 @@ export class ChallengeService {
     }
   ];
 
-  private mathChallenges: Challenge[] = [
-    {
-      id: 'math-1',
-      type: ChallengeType.MATH,
-      instruction: 'Solve the math problem',
-      question: 'What is 7 + 15?',
-      correctAnswers: 22
-    },
-    {
-      id: 'math-2',
-      type: ChallengeType.MATH,
-      instruction: 'Solve the math problem',
-      question: 'What is 12 × 3?',
-      correctAnswers: 36
-    },
-    {
-      id: 'math-3',
-      type: ChallengeType.MATH,
-      instruction: 'Solve the math problem',
-      question: 'What is 45 - 18?',
-      correctAnswers: 27
+  private mathChallenges: Challenge[] = [];
+
+  constructor() {
+    this.mathChallenges = this.generateMathChallenges(3);
+  }
+
+  private generateMathChallenges(count: number): Challenge[] {
+    const challenges: Challenge[] = [];
+    const operators = ['+', '-', '×'];
+    
+    for (let i = 0; i < count; i++) {
+      const num1 = Math.floor(Math.random() * 100) + 1;
+      const num2 = Math.floor(Math.random() * 100) + 1;
+      const operator = operators[Math.floor(Math.random() * operators.length)];
+      
+      let answer: number;
+      let question: string;
+      
+      switch (operator) {
+        case '+':
+          answer = num1 + num2;
+          question = `What is ${num1} + ${num2}?`;
+          break;
+        case '-':
+          answer = num1 - num2;
+          question = `What is ${num1} - ${num2}?`;
+          break;
+        case '×':
+          answer = num1 * num2;
+          question = `What is ${num1} × ${num2}?`;
+          break;
+        default:
+          answer = num1 + num2;
+          question = `What is ${num1} + ${num2}?`;
+      }
+      
+      challenges.push({
+        id: `math-${i + 1}`,
+        type: ChallengeType.MATH,
+        instruction: 'Solve the math problem',
+        question,
+        correctAnswers: answer
+      });
     }
-  ];
+    
+    return challenges;
+  }
 
   private textChallenges: Challenge[] = [
     {
