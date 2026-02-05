@@ -56,7 +56,7 @@ import { ChallengeResult } from '../../models';
         border: 1px solid var(--border);
         border-radius: 8px;
         padding: 48px;
-        max-width: 500px;
+        min-width: 600px;
         width: 100%;
         text-align: center;
       }
@@ -179,7 +179,7 @@ import { ChallengeResult } from '../../models';
       .actions {
         display: flex;
         gap: 16px;
-        justify-content: center;
+        justify-content: space-between;
       }
 
       @media (max-width: 768px) {
