@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Challenge, ChallengeType, ChallengeResult } from '../models';
+import { FormValidationService } from './form-validation.service';
 
 @Injectable({
   providedIn: 'root'
@@ -62,7 +63,7 @@ export class ChallengeService {
 
   private mathChallenges: Challenge[] = [];
 
-  constructor() {
+  constructor(private formValidationService: FormValidationService) {
     this.mathChallenges = this.generateMathChallenges(3);
   }
 
@@ -147,23 +148,24 @@ export class ChallengeService {
 
   validateAnswer(challenge: Challenge, userAnswer: number[] | string | number): boolean {
     if (challenge.type === ChallengeType.IMAGE_SELECTION) {
-      const correctAnswers = challenge.correctAnswers as number[];
-      const userImageAnswer = userAnswer as number[];
-      
-      if (userImageAnswer.length !== correctAnswers.length) return false;
-      
-      const sortedUserAnswer = [...userImageAnswer].sort((a, b) => a - b);
-      const sortedCorrectAnswers = [...correctAnswers].sort((a, b) => a - b);
-      
-      return sortedUserAnswer.every((answer, index) => answer === sortedCorrectAnswers[index]);
+      return this.formValidationService.validateImageSelection(
+        userAnswer as number[],
+        challenge.correctAnswers as number[]
+      );
     }
     
     if (challenge.type === ChallengeType.MATH) {
-      return Number(userAnswer) === Number(challenge.correctAnswers);
+      return this.formValidationService.validateMathAnswer(
+        userAnswer as number,
+        challenge.correctAnswers as number
+      );
     }
     
     if (challenge.type === ChallengeType.TEXT_INPUT) {
-      return String(userAnswer).toUpperCase() === String(challenge.correctAnswers).toUpperCase();
+      return this.formValidationService.validateTextInput(
+        userAnswer as string,
+        challenge.correctAnswers as string
+      );
     }
     
     return false;
