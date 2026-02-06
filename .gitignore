@@ -48,4 +48,4 @@ Thumbs.db
 /docs/
 
 # Secrets
-src/environments/
+src/environments/*.local.ts
