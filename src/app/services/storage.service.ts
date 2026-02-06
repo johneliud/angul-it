@@ -24,7 +24,15 @@ export class StorageService {
   }
 
   getSession(): UserSession | null {
-    return this.getItem<UserSession>(this.STORAGE_KEYS.SESSION);
+    const session = this.getItem<UserSession>(this.STORAGE_KEYS.SESSION);
+    if (session) {
+      // Convert date strings back to Date objects
+      session.startTime = new Date(session.startTime);
+      if (session.endTime) {
+        session.endTime = new Date(session.endTime);
+      }
+    }
+    return session;
   }
 
   saveProgress(progress: UserProgress): void {
@@ -43,6 +51,10 @@ export class StorageService {
 
   clearResults(): void {
     sessionStorage.removeItem(this.STORAGE_KEYS.RESULTS);
+  }
+
+  clearSession(): void {
+    sessionStorage.removeItem(this.STORAGE_KEYS.SESSION);
   }
 
   private setItem<T>(key: string, value: T): void {
