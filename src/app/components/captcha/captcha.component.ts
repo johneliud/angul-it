@@ -40,13 +40,13 @@ import { SessionService } from '../../services/session.service';
         <div class="challenge-content">
           <div class="image-grid" *ngIf="currentChallenge.type === ChallengeType.IMAGE_SELECTION">
             <div 
-              *ngFor="let image of currentChallenge.images; let i = index"
+              *ngFor="let image of currentChallenge.images"
               class="image-item"
-              [class.selected]="selectedImages.includes(i)"
-              (click)="toggleImageSelection(i)"
+              [class.selected]="selectedImageIds.includes(image.id)"
+              (click)="toggleImageSelection(image.id)"
             >
-              <img [src]="image" [alt]="'Image ' + (i + 1)">
-              <div class="selection-overlay" *ngIf="selectedImages.includes(i)"></div>
+              <img [src]="image.url" [alt]="image.id">
+              <div class="selection-overlay" *ngIf="selectedImageIds.includes(image.id)"></div>
             </div>
           </div>
 
@@ -60,14 +60,16 @@ import { SessionService } from '../../services/session.service';
             >
           </div>
 
-          <div class="text-challenge" *ngIf="currentChallenge.type === ChallengeType.TEXT_INPUT">
-            <img [src]="currentChallenge.images![0]" alt="Text to type" class="text-image">
-            <input 
-              type="text" 
-              [(ngModel)]="textAnswer" 
-              placeholder="Type the word shown above"
-              class="text-input"
+          <div class="color-grid" *ngIf="currentChallenge.type === ChallengeType.COLOR_SELECTION">
+            <div 
+              *ngFor="let colorBox of currentChallenge.colors; let i = index"
+              class="color-box"
+              [style.background-color]="colorBox.value"
+              [class.selected]="selectedColorIds.includes(colorBox.id)"
+              (click)="toggleColorSelection(colorBox.id)"
             >
+              <div class="selection-overlay" *ngIf="selectedColorIds.includes(colorBox.id)">✓</div>
+            </div>
           </div>
         </div>
 
@@ -75,7 +77,7 @@ import { SessionService } from '../../services/session.service';
           <div class="validation-error" *ngIf="showValidationError">
             <span *ngIf="currentChallenge.type === ChallengeType.IMAGE_SELECTION">Please select at least one image to continue</span>
             <span *ngIf="currentChallenge.type === ChallengeType.MATH">Please enter an answer to continue</span>
-            <span *ngIf="currentChallenge.type === ChallengeType.TEXT_INPUT">Please type the word to continue</span>
+            <span *ngIf="currentChallenge.type === ChallengeType.COLOR_SELECTION">Please select at least one color box to continue</span>
           </div>
           
           <div class="nav-buttons">
@@ -325,6 +327,31 @@ import { SessionService } from '../../services/session.service';
       border-color: var(--primary);
     }
 
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .color-box {
+      position: relative;
+      aspect-ratio: 1;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .color-box:hover {
+      border-color: var(--primary);
+    }
+
+    .color-box.selected {
+      border-color: var(--primary);
+      border-width: 3px;
+    }
+
     @media (max-width: 768px) {
       .captcha-card {
         padding: 24px;
@@ -348,7 +375,8 @@ export class CaptchaComponent implements OnInit {
   ChallengeType = ChallengeType;
   currentStage = 1;
   totalStages = 4;
-  selectedImages: number[] = [];
+  selectedImageIds: string[] = [];
+  selectedColorIds: string[] = [];
   mathAnswer: number | null = null;
   textAnswer: string = '';
   challenges: Challenge[] = [];
@@ -395,44 +423,55 @@ export class CaptchaComponent implements OnInit {
     return Array(this.totalStages).fill(0).map((_, i) => i);
   }
 
-  toggleImageSelection(index: number) {
-    const selectedIndex = this.selectedImages.indexOf(index);
+  toggleImageSelection(imageId: string) {
+    const selectedIndex = this.selectedImageIds.indexOf(imageId);
     if (selectedIndex > -1) {
-      this.selectedImages.splice(selectedIndex, 1);
+      this.selectedImageIds.splice(selectedIndex, 1);
     } else {
-      this.selectedImages.push(index);
+      this.selectedImageIds.push(imageId);
+    }
+    this.showValidationError = false;
+  }
+
+  toggleColorSelection(colorId: string) {
+    const selectedIndex = this.selectedColorIds.indexOf(colorId);
+    if (selectedIndex > -1) {
+      this.selectedColorIds.splice(selectedIndex, 1);
+    } else {
+      this.selectedColorIds.push(colorId);
     }
     this.showValidationError = false;
   }
 
   isCurrentChallengeValid() {
     if (this.currentChallenge.type === ChallengeType.IMAGE_SELECTION) {
-      return this.selectedImages.length > 0;
+      return this.selectedImageIds.length > 0;
+    }
+    if (this.currentChallenge.type === ChallengeType.COLOR_SELECTION) {
+      return this.selectedColorIds.length > 0;
     }
     if (this.currentChallenge.type === ChallengeType.MATH) {
       return this.mathAnswer !== null && this.mathAnswer !== undefined;
     }
-    if (this.currentChallenge.type === ChallengeType.TEXT_INPUT) {
-      return this.textAnswer.trim().length > 0;
-    }
     return false;
   }
 
-  getCurrentAnswer(): number[] | string | number {
+  getCurrentAnswer(): number[] | string | number | string[] {
     if (this.currentChallenge.type === ChallengeType.IMAGE_SELECTION) {
-      return [...this.selectedImages];
+      return [...this.selectedImageIds];
+    }
+    if (this.currentChallenge.type === ChallengeType.COLOR_SELECTION) {
+      return [...this.selectedColorIds];
     }
     if (this.currentChallenge.type === ChallengeType.MATH) {
       return this.mathAnswer!;
-    }
-    if (this.currentChallenge.type === ChallengeType.TEXT_INPUT) {
-      return this.textAnswer.trim();
     }
     return [];
   }
 
   resetCurrentAnswer() {
-    this.selectedImages = [];
+    this.selectedImageIds = [];
+    this.selectedColorIds = [];
     this.mathAnswer = null;
     this.textAnswer = '';
   }

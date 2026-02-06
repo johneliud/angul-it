@@ -1,23 +1,24 @@
 export enum ChallengeType {
   IMAGE_SELECTION = 'image_selection',
   MATH = 'math',
-  TEXT_INPUT = 'text_input'
+  COLOR_SELECTION = 'color_selection'
 }
 
 export interface Challenge {
   id: string;
   type: ChallengeType;
   instruction: string;
-  images?: string[];
+  images?: { id: string; url: string }[];
   question?: string;
   options?: string[];
-  correctAnswers: number[] | string | number;
+  colors?: { id: string; value: string }[];
+  correctAnswers: number[] | string | number | string[];
 }
 
 export interface ChallengeResult {
   challengeId: string;
-  userAnswer: number[] | string | number;
-  correctAnswer: number[] | string | number;
+  userAnswer: number[] | string | number | string[];
+  correctAnswer: number[] | string | number | string[];
   isCorrect: boolean;
   timestamp: Date;
 }
