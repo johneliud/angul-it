@@ -62,13 +62,13 @@ import { SessionService } from '../../services/session.service';
 
           <div class="color-grid" *ngIf="currentChallenge.type === ChallengeType.COLOR_SELECTION">
             <div 
-              *ngFor="let color of currentChallenge.colors; let i = index"
+              *ngFor="let colorBox of currentChallenge.colors; let i = index"
               class="color-box"
-              [style.background-color]="color"
-              [class.selected]="selectedImages.includes(i)"
-              (click)="toggleImageSelection(i)"
+              [style.background-color]="colorBox.value"
+              [class.selected]="selectedColorIds.includes(colorBox.id)"
+              (click)="toggleColorSelection(colorBox.id)"
             >
-              <div class="selection-overlay" *ngIf="selectedImages.includes(i)">✓</div>
+              <div class="selection-overlay" *ngIf="selectedColorIds.includes(colorBox.id)">✓</div>
             </div>
           </div>
         </div>
@@ -376,6 +376,7 @@ export class CaptchaComponent implements OnInit {
   currentStage = 1;
   totalStages = 4;
   selectedImages: number[] = [];
+  selectedColorIds: string[] = [];
   mathAnswer: number | null = null;
   textAnswer: string = '';
   challenges: Challenge[] = [];
@@ -432,10 +433,22 @@ export class CaptchaComponent implements OnInit {
     this.showValidationError = false;
   }
 
+  toggleColorSelection(colorId: string) {
+    const selectedIndex = this.selectedColorIds.indexOf(colorId);
+    if (selectedIndex > -1) {
+      this.selectedColorIds.splice(selectedIndex, 1);
+    } else {
+      this.selectedColorIds.push(colorId);
+    }
+    this.showValidationError = false;
+  }
+
   isCurrentChallengeValid() {
-    if (this.currentChallenge.type === ChallengeType.IMAGE_SELECTION || 
-        this.currentChallenge.type === ChallengeType.COLOR_SELECTION) {
+    if (this.currentChallenge.type === ChallengeType.IMAGE_SELECTION) {
       return this.selectedImages.length > 0;
+    }
+    if (this.currentChallenge.type === ChallengeType.COLOR_SELECTION) {
+      return this.selectedColorIds.length > 0;
     }
     if (this.currentChallenge.type === ChallengeType.MATH) {
       return this.mathAnswer !== null && this.mathAnswer !== undefined;
@@ -443,10 +456,12 @@ export class CaptchaComponent implements OnInit {
     return false;
   }
 
-  getCurrentAnswer(): number[] | string | number {
-    if (this.currentChallenge.type === ChallengeType.IMAGE_SELECTION || 
-        this.currentChallenge.type === ChallengeType.COLOR_SELECTION) {
+  getCurrentAnswer(): number[] | string | number | string[] {
+    if (this.currentChallenge.type === ChallengeType.IMAGE_SELECTION) {
       return [...this.selectedImages];
+    }
+    if (this.currentChallenge.type === ChallengeType.COLOR_SELECTION) {
+      return [...this.selectedColorIds];
     }
     if (this.currentChallenge.type === ChallengeType.MATH) {
       return this.mathAnswer!;
@@ -456,6 +471,7 @@ export class CaptchaComponent implements OnInit {
 
   resetCurrentAnswer() {
     this.selectedImages = [];
+    this.selectedColorIds = [];
     this.mathAnswer = null;
     this.textAnswer = '';
   }
