@@ -13,51 +13,51 @@ export class ChallengeService {
       type: ChallengeType.IMAGE_SELECTION,
       instruction: 'Select all images containing traffic lights',
       images: [
-        'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // building
-        'https://images.pexels.com/photos/34597052/pexels-photo-34597052.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop', // traffic light
-        'https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // car
-        'https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // tree
-        'https://images.pexels.com/photos/35380639/pexels-photo-35380639.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop', // traffic light
-        'https://images.pexels.com/photos/315938/pexels-photo-315938.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // road
-        'https://images.pexels.com/photos/147430/pexels-photo-147430.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop', // traffic light
-        'https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // mountain
-        'https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop'    // park
+        { id: 'building-1', url: 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'traffic-1', url: 'https://images.pexels.com/photos/34597052/pexels-photo-34597052.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'car-1', url: 'https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'tree-1', url: 'https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'traffic-2', url: 'https://images.pexels.com/photos/35380639/pexels-photo-35380639.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'road-1', url: 'https://images.pexels.com/photos/315938/pexels-photo-315938.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'traffic-3', url: 'https://images.pexels.com/photos/147430/pexels-photo-147430.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'mountain-1', url: 'https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'park-1', url: 'https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' }
       ],
-      correctAnswers: [1, 4, 6]
+      correctAnswers: ['traffic-1', 'traffic-2', 'traffic-3']
     },
     {
       id: 'cars-1',
       type: ChallengeType.IMAGE_SELECTION,
       instruction: 'Select all images with cars',
       images: [
-        'https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // car
-        'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // building
-        'https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // tree
-        'https://images.pexels.com/photos/116675/pexels-photo-116675.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // car
-        'https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // mountain
-        'https://images.pexels.com/photos/315938/pexels-photo-315938.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // road
-        'https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // park
-        'https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // car
-        'https://images.pexels.com/photos/34597052/pexels-photo-34597052.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop'  // traffic light
+        { id: 'car-1', url: 'https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'building-1', url: 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'tree-1', url: 'https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'car-2', url: 'https://images.pexels.com/photos/116675/pexels-photo-116675.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'mountain-1', url: 'https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'road-1', url: 'https://images.pexels.com/photos/315938/pexels-photo-315938.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'park-1', url: 'https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'car-3', url: 'https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'traffic-1', url: 'https://images.pexels.com/photos/34597052/pexels-photo-34597052.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' }
       ],
-      correctAnswers: [0, 3, 7]
+      correctAnswers: ['car-1', 'car-2', 'car-3']
     },
     {
       id: 'buildings-1',
       type: ChallengeType.IMAGE_SELECTION,
       instruction: 'Select all images with buildings',
       images: [
-        'https://images.pexels.com/photos/116675/pexels-photo-116675.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // tree
-        'https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // car
-        'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // building
-        'https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // mountain
-        'https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // park
-        'https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop', // building
-        'https://images.pexels.com/photos/1105766/pexels-photo-1105766.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop', // building
-        'https://images.pexels.com/photos/315938/pexels-photo-315938.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',   // road
-        'https://images.pexels.com/photos/34597052/pexels-photo-34597052.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop'  // traffic light
+        { id: 'tree-1', url: 'https://images.pexels.com/photos/116675/pexels-photo-116675.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'car-1', url: 'https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'building-1', url: 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'mountain-1', url: 'https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'park-1', url: 'https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'building-2', url: 'https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'building-3', url: 'https://images.pexels.com/photos/1105766/pexels-photo-1105766.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'road-1', url: 'https://images.pexels.com/photos/315938/pexels-photo-315938.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' },
+        { id: 'traffic-1', url: 'https://images.pexels.com/photos/34597052/pexels-photo-34597052.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop' }
       ],
-      correctAnswers: [2, 5, 6]
+      correctAnswers: ['building-1', 'building-2', 'building-3']
     }
   ];
 
@@ -164,13 +164,22 @@ export class ChallengeService {
   ];
 
   getChallenges(): Challenge[] {
+    const shuffledImageChallenges = this.imageSelectionChallenges.map(challenge => ({
+      ...challenge,
+      images: this.shuffleArray([...challenge.images!])
+    }));
+    
+    const shuffledColorChallenges = this.textChallenges.map(challenge => ({
+      ...challenge,
+      colors: this.shuffleArray([...challenge.colors!])
+    }));
+    
     const allChallenges = [
-      ...this.imageSelectionChallenges,
+      ...shuffledImageChallenges,
       ...this.mathChallenges,
-      ...this.textChallenges
+      ...shuffledColorChallenges
     ];
     
-    // Shuffle and return 4 random challenges
     return this.shuffleArray(allChallenges).slice(0, 4);
   }
 
@@ -185,10 +194,15 @@ export class ChallengeService {
 
   validateAnswer(challenge: Challenge, userAnswer: number[] | string | number | string[]): boolean {
     if (challenge.type === ChallengeType.IMAGE_SELECTION) {
-      return this.formValidationService.validateImageSelection(
-        userAnswer as number[],
-        challenge.correctAnswers as number[]
-      );
+      const correctIds = challenge.correctAnswers as string[];
+      const userIds = userAnswer as string[];
+      
+      if (userIds.length !== correctIds.length) return false;
+      
+      const sortedUserIds = [...userIds].sort();
+      const sortedCorrectIds = [...correctIds].sort();
+      
+      return sortedUserIds.every((id, index) => id === sortedCorrectIds[index]);
     }
     
     if (challenge.type === ChallengeType.MATH) {
