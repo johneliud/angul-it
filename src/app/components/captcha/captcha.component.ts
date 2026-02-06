@@ -68,7 +68,7 @@ import { SessionService } from '../../services/session.service';
               [class.selected]="selectedColorIds.includes(colorBox.id)"
               (click)="toggleColorSelection(colorBox.id)"
             >
-              <div class="selection-overlay" *ngIf="selectedColorIds.includes(colorBox.id)">✓</div>
+              <div class="selection-overlay" *ngIf="selectedColorIds.includes(colorBox.id)"></div>
             </div>
           </div>
         </div>
