@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Challenge, ChallengeType, ChallengeResult } from '../../models';
+import { Challenge, ChallengeType, ChallengeResult, UserSession } from '../../models';
 import { ChallengeService } from '../../services/challenge.service';
 import { StorageService } from '../../services/storage.service';
+import { SessionService } from '../../services/session.service';
 
 @Component({
   selector: 'app-captcha',
@@ -13,8 +14,22 @@ import { StorageService } from '../../services/storage.service';
   template: `
     <div class="page-container">
       <div class="captcha-card">
-        <div class="progress-bar">
-          <div class="progress-fill" [style.width.%]="progressPercentage"></div>
+        <div class="progress-section">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="progressPercentage"></div>
+          </div>
+          
+          <div class="stage-indicators">
+            <div 
+              *ngFor="let stage of getStageArray(); let i = index"
+              class="stage-indicator"
+              [class.completed]="i < currentStage - 1"
+              [class.current]="i === currentStage - 1"
+            >
+              <span *ngIf="i < currentStage - 1"></span>
+              <span *ngIf="i >= currentStage - 1">{{i + 1}}</span>
+            </div>
+          </div>
         </div>
         
         <div class="challenge-header">
@@ -98,7 +113,7 @@ import { StorageService } from '../../services/storage.service';
       height: 4px;
       background: var(--border);
       border-radius: 2px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       overflow: hidden;
     }
 
@@ -106,6 +121,44 @@ import { StorageService } from '../../services/storage.service';
       height: 100%;
       background: var(--primary);
       transition: width 0.3s ease;
+    }
+
+    .progress-section {
+      margin-bottom: 24px;
+    }
+
+    .stage-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .stage-indicator {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 2px solid var(--border);
+      background: white;
+      color: var(--text-light);
+      transition: all 0.3s ease;
+    }
+
+    .stage-indicator.completed {
+      background: var(--success);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .stage-indicator.current {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: scale(1.1);
     }
 
     .challenge-header {
@@ -163,7 +216,7 @@ import { StorageService } from '../../services/storage.service';
       right: 4px;
       width: 24px;
       height: 24px;
-      background: var(--primary);
+      background: var(--background);
       color: white;
       border-radius: 50%;
       display: flex;
@@ -301,16 +354,29 @@ export class CaptchaComponent implements OnInit {
   challenges: Challenge[] = [];
   results: ChallengeResult[] = [];
   showValidationError = false;
+  currentSession: UserSession | null = null;
 
   constructor(
     private router: Router,
     private challengeService: ChallengeService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private sessionService: SessionService
   ) {}
 
   ngOnInit() {
     this.challenges = this.challengeService.getChallenges();
     this.totalStages = this.challenges.length;
+    
+    // Initialize or restore session
+    const existingSession = this.storageService.getSession();
+    if (existingSession && this.sessionService.isSessionActive(existingSession)) {
+      this.currentSession = existingSession;
+      this.currentStage = existingSession.progress.currentStage;
+      this.results = existingSession.progress.results;
+    } else {
+      this.currentSession = this.sessionService.createSession(this.totalStages);
+      this.storageService.saveSession(this.currentSession);
+    }
   }
 
   get currentChallenge() {
@@ -323,6 +389,10 @@ export class CaptchaComponent implements OnInit {
 
   get isLastStage() {
     return this.currentStage === this.totalStages;
+  }
+
+  getStageArray(): number[] {
+    return Array(this.totalStages).fill(0).map((_, i) => i);
   }
 
   toggleImageSelection(index: number) {
@@ -387,7 +457,23 @@ export class CaptchaComponent implements OnInit {
     );
     this.results.push(result);
 
+    // Update session
+    if (this.currentSession) {
+      this.currentSession = this.sessionService.updateProgress(this.currentSession, {
+        currentStage: this.currentStage,
+        results: this.results,
+        completedChallenges: [...this.currentSession.progress.completedChallenges, this.currentChallenge.id]
+      });
+      this.storageService.saveSession(this.currentSession);
+    }
+
     if (this.isLastStage) {
+      // Complete session
+      if (this.currentSession) {
+        this.currentSession = this.sessionService.completeSession(this.currentSession);
+        this.storageService.saveSession(this.currentSession);
+      }
+      
       this.storageService.saveResults(this.results);
       this.router.navigate(['/results']);
     } else {
