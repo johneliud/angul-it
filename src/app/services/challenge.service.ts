@@ -111,18 +111,25 @@ export class ChallengeService {
 
   private textChallenges: Challenge[] = [
     {
-      id: 'text-1',
-      type: ChallengeType.TEXT_INPUT,
-      instruction: 'Type the word shown below',
-      images: ['https://via.placeholder.com/200x80/333333/ffffff?text=VERIFY'],
-      correctAnswers: 'VERIFY'
+      id: 'color-1',
+      type: ChallengeType.COLOR_SELECTION,
+      instruction: 'Select all RED boxes',
+      colors: ['#ef4444', '#3b82f6', '#ef4444', '#10b981', '#ef4444', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1'],
+      correctAnswers: [0, 2, 4]
     },
     {
-      id: 'text-2',
-      type: ChallengeType.TEXT_INPUT,
-      instruction: 'Type the word shown below',
-      images: ['https://via.placeholder.com/200x80/333333/ffffff?text=SECURE'],
-      correctAnswers: 'SECURE'
+      id: 'color-2',
+      type: ChallengeType.COLOR_SELECTION,
+      instruction: 'Select all BLUE boxes',
+      colors: ['#10b981', '#3b82f6', '#ef4444', '#3b82f6', '#f59e0b', '#8b5cf6', '#3b82f6', '#ec4899', '#6366f1'],
+      correctAnswers: [1, 3, 6]
+    },
+    {
+      id: 'color-3',
+      type: ChallengeType.COLOR_SELECTION,
+      instruction: 'Select all GREEN boxes',
+      colors: ['#10b981', '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#10b981', '#6366f1'],
+      correctAnswers: [0, 3, 7]
     }
   ];
 
@@ -161,10 +168,10 @@ export class ChallengeService {
       );
     }
     
-    if (challenge.type === ChallengeType.TEXT_INPUT) {
-      return this.formValidationService.validateTextInput(
-        userAnswer as string,
-        challenge.correctAnswers as string
+    if (challenge.type === ChallengeType.COLOR_SELECTION) {
+      return this.formValidationService.validateImageSelection(
+        userAnswer as number[],
+        challenge.correctAnswers as number[]
       );
     }
     
