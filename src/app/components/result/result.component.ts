@@ -57,7 +57,7 @@ import { StorageService } from '../../services/storage.service';
         border: 1px solid var(--border);
         border-radius: 8px;
         padding: 48px;
-        min-width: 600px;
+        max-width: 600px;
         width: 100%;
         text-align: center;
       }

@@ -89,7 +89,7 @@ import { StorageService } from '../../services/storage.service';
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 32px;
-      min-width: 600px;
+      max-width: 600px;
       width: 100%;
     }
 
