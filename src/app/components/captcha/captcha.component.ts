@@ -60,14 +60,16 @@ import { SessionService } from '../../services/session.service';
             >
           </div>
 
-          <div class="text-challenge" *ngIf="currentChallenge.type === ChallengeType.TEXT_INPUT">
-            <img [src]="currentChallenge.images![0]" alt="Text to type" class="text-image">
-            <input 
-              type="text" 
-              [(ngModel)]="textAnswer" 
-              placeholder="Type the word shown above"
-              class="text-input"
+          <div class="color-grid" *ngIf="currentChallenge.type === ChallengeType.COLOR_SELECTION">
+            <div 
+              *ngFor="let color of currentChallenge.colors; let i = index"
+              class="color-box"
+              [style.background-color]="color"
+              [class.selected]="selectedImages.includes(i)"
+              (click)="toggleImageSelection(i)"
             >
+              <div class="selection-overlay" *ngIf="selectedImages.includes(i)">✓</div>
+            </div>
           </div>
         </div>
 
@@ -75,7 +77,7 @@ import { SessionService } from '../../services/session.service';
           <div class="validation-error" *ngIf="showValidationError">
             <span *ngIf="currentChallenge.type === ChallengeType.IMAGE_SELECTION">Please select at least one image to continue</span>
             <span *ngIf="currentChallenge.type === ChallengeType.MATH">Please enter an answer to continue</span>
-            <span *ngIf="currentChallenge.type === ChallengeType.TEXT_INPUT">Please type the word to continue</span>
+            <span *ngIf="currentChallenge.type === ChallengeType.COLOR_SELECTION">Please select at least one color box to continue</span>
           </div>
           
           <div class="nav-buttons">
@@ -325,6 +327,31 @@ import { SessionService } from '../../services/session.service';
       border-color: var(--primary);
     }
 
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .color-box {
+      position: relative;
+      aspect-ratio: 1;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .color-box:hover {
+      border-color: var(--primary);
+    }
+
+    .color-box.selected {
+      border-color: var(--primary);
+      border-width: 3px;
+    }
+
     @media (max-width: 768px) {
       .captcha-card {
         padding: 24px;
@@ -406,27 +433,23 @@ export class CaptchaComponent implements OnInit {
   }
 
   isCurrentChallengeValid() {
-    if (this.currentChallenge.type === ChallengeType.IMAGE_SELECTION) {
+    if (this.currentChallenge.type === ChallengeType.IMAGE_SELECTION || 
+        this.currentChallenge.type === ChallengeType.COLOR_SELECTION) {
       return this.selectedImages.length > 0;
     }
     if (this.currentChallenge.type === ChallengeType.MATH) {
       return this.mathAnswer !== null && this.mathAnswer !== undefined;
     }
-    if (this.currentChallenge.type === ChallengeType.TEXT_INPUT) {
-      return this.textAnswer.trim().length > 0;
-    }
     return false;
   }
 
   getCurrentAnswer(): number[] | string | number {
-    if (this.currentChallenge.type === ChallengeType.IMAGE_SELECTION) {
+    if (this.currentChallenge.type === ChallengeType.IMAGE_SELECTION || 
+        this.currentChallenge.type === ChallengeType.COLOR_SELECTION) {
       return [...this.selectedImages];
     }
     if (this.currentChallenge.type === ChallengeType.MATH) {
       return this.mathAnswer!;
-    }
-    if (this.currentChallenge.type === ChallengeType.TEXT_INPUT) {
-      return this.textAnswer.trim();
     }
     return [];
   }
