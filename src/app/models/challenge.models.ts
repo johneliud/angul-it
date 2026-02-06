@@ -11,14 +11,14 @@ export interface Challenge {
   images?: string[];
   question?: string;
   options?: string[];
-  colors?: string[];
-  correctAnswers: number[] | string | number;
+  colors?: { id: string; value: string }[];
+  correctAnswers: number[] | string | number | string[];
 }
 
 export interface ChallengeResult {
   challengeId: string;
-  userAnswer: number[] | string | number;
-  correctAnswer: number[] | string | number;
+  userAnswer: number[] | string | number | string[];
+  correctAnswer: number[] | string | number | string[];
   isCorrect: boolean;
   timestamp: Date;
 }
