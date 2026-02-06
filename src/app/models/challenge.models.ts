@@ -8,7 +8,7 @@ export interface Challenge {
   id: string;
   type: ChallengeType;
   instruction: string;
-  images?: string[];
+  images?: { id: string; url: string }[];
   question?: string;
   options?: string[];
   colors?: { id: string; value: string }[];
