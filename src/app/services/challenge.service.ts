@@ -114,22 +114,52 @@ export class ChallengeService {
       id: 'color-1',
       type: ChallengeType.COLOR_SELECTION,
       instruction: 'Select all RED boxes',
-      colors: ['#ef4444', '#3b82f6', '#ef4444', '#10b981', '#ef4444', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1'],
-      correctAnswers: [0, 2, 4]
+      colors: [
+        { id: 'red-1', value: '#ef4444' },
+        { id: 'blue-1', value: '#3b82f6' },
+        { id: 'red-2', value: '#ef4444' },
+        { id: 'green-1', value: '#10b981' },
+        { id: 'red-3', value: '#ef4444' },
+        { id: 'orange-1', value: '#f59e0b' },
+        { id: 'purple-1', value: '#8b5cf6' },
+        { id: 'pink-1', value: '#ec4899' },
+        { id: 'indigo-1', value: '#6366f1' }
+      ],
+      correctAnswers: ['red-1', 'red-2', 'red-3']
     },
     {
       id: 'color-2',
       type: ChallengeType.COLOR_SELECTION,
       instruction: 'Select all BLUE boxes',
-      colors: ['#10b981', '#3b82f6', '#ef4444', '#3b82f6', '#f59e0b', '#8b5cf6', '#3b82f6', '#ec4899', '#6366f1'],
-      correctAnswers: [1, 3, 6]
+      colors: [
+        { id: 'green-1', value: '#10b981' },
+        { id: 'blue-1', value: '#3b82f6' },
+        { id: 'red-1', value: '#ef4444' },
+        { id: 'blue-2', value: '#3b82f6' },
+        { id: 'orange-1', value: '#f59e0b' },
+        { id: 'purple-1', value: '#8b5cf6' },
+        { id: 'blue-3', value: '#3b82f6' },
+        { id: 'pink-1', value: '#ec4899' },
+        { id: 'indigo-1', value: '#6366f1' }
+      ],
+      correctAnswers: ['blue-1', 'blue-2', 'blue-3']
     },
     {
       id: 'color-3',
       type: ChallengeType.COLOR_SELECTION,
       instruction: 'Select all GREEN boxes',
-      colors: ['#10b981', '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#10b981', '#6366f1'],
-      correctAnswers: [0, 3, 7]
+      colors: [
+        { id: 'green-1', value: '#10b981' },
+        { id: 'blue-1', value: '#3b82f6' },
+        { id: 'red-1', value: '#ef4444' },
+        { id: 'green-2', value: '#10b981' },
+        { id: 'orange-1', value: '#f59e0b' },
+        { id: 'purple-1', value: '#8b5cf6' },
+        { id: 'pink-1', value: '#ec4899' },
+        { id: 'green-3', value: '#10b981' },
+        { id: 'indigo-1', value: '#6366f1' }
+      ],
+      correctAnswers: ['green-1', 'green-2', 'green-3']
     }
   ];
 
@@ -153,7 +183,7 @@ export class ChallengeService {
     return shuffled;
   }
 
-  validateAnswer(challenge: Challenge, userAnswer: number[] | string | number): boolean {
+  validateAnswer(challenge: Challenge, userAnswer: number[] | string | number | string[]): boolean {
     if (challenge.type === ChallengeType.IMAGE_SELECTION) {
       return this.formValidationService.validateImageSelection(
         userAnswer as number[],
@@ -169,16 +199,21 @@ export class ChallengeService {
     }
     
     if (challenge.type === ChallengeType.COLOR_SELECTION) {
-      return this.formValidationService.validateImageSelection(
-        userAnswer as number[],
-        challenge.correctAnswers as number[]
-      );
+      const correctIds = challenge.correctAnswers as string[];
+      const userIds = userAnswer as string[];
+      
+      if (userIds.length !== correctIds.length) return false;
+      
+      const sortedUserIds = [...userIds].sort();
+      const sortedCorrectIds = [...correctIds].sort();
+      
+      return sortedUserIds.every((id, index) => id === sortedCorrectIds[index]);
     }
     
     return false;
   }
 
-  createResult(challenge: Challenge, userAnswer: number[] | string | number): ChallengeResult {
+  createResult(challenge: Challenge, userAnswer: number[] | string | number | string[]): ChallengeResult {
     return {
       challengeId: challenge.id,
       userAnswer,
