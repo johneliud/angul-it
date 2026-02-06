@@ -1,7 +1,7 @@
 export enum ChallengeType {
   IMAGE_SELECTION = 'image_selection',
   MATH = 'math',
-  TEXT_INPUT = 'text_input'
+  COLOR_SELECTION = 'color_selection'
 }
 
 export interface Challenge {
@@ -11,6 +11,7 @@ export interface Challenge {
   images?: string[];
   question?: string;
   options?: string[];
+  colors?: string[];
   correctAnswers: number[] | string | number;
 }
 
