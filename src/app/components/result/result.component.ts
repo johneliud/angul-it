@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ChallengeResult } from '../../models';
+import { StorageService } from '../../services/storage.service';
 
 @Component({
   selector: 'app-result',
@@ -56,7 +57,7 @@ import { ChallengeResult } from '../../models';
         border: 1px solid var(--border);
         border-radius: 8px;
         padding: 48px;
-        min-width: 600px;
+        max-width: 600px;
         width: 100%;
         text-align: center;
       }
@@ -203,12 +204,15 @@ export class ResultComponent implements OnInit {
   totalChallenges = 0;
   score = 0;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private storageService: StorageService
+  ) {}
 
   ngOnInit() {
-    const storedResults = sessionStorage.getItem('challengeResults');
+    const storedResults = this.storageService.getResults();
     if (storedResults) {
-      this.challengeResults = JSON.parse(storedResults);
+      this.challengeResults = storedResults;
       this.totalChallenges = this.challengeResults.length;
       this.score = this.challengeResults.filter((result) => result.isCorrect).length;
     } else {
@@ -233,12 +237,12 @@ export class ResultComponent implements OnInit {
   }
 
   goHome() {
-    sessionStorage.removeItem('challengeResults');
+    this.storageService.clearAll();
     this.router.navigate(['/home']);
   }
 
   startNewChallenge() {
-    sessionStorage.removeItem('challengeResults');
+    this.storageService.clearAll();
     this.router.navigate(['/captcha']);
   }
 }

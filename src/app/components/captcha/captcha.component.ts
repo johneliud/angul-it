@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Challenge, ChallengeType, ChallengeResult } from '../../models';
 import { ChallengeService } from '../../services/challenge.service';
+import { StorageService } from '../../services/storage.service';
 
 @Component({
   selector: 'app-captcha',
@@ -88,7 +89,7 @@ import { ChallengeService } from '../../services/challenge.service';
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 32px;
-      min-width: 600px;
+      max-width: 600px;
       width: 100%;
     }
 
@@ -303,7 +304,8 @@ export class CaptchaComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private challengeService: ChallengeService
+    private challengeService: ChallengeService,
+    private storageService: StorageService
   ) {}
 
   ngOnInit() {
@@ -386,7 +388,7 @@ export class CaptchaComponent implements OnInit {
     this.results.push(result);
 
     if (this.isLastStage) {
-      sessionStorage.setItem('challengeResults', JSON.stringify(this.results));
+      this.storageService.saveResults(this.results);
       this.router.navigate(['/results']);
     } else {
       this.currentStage++;
