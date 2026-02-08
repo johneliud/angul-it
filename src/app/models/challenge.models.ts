@@ -17,6 +17,9 @@ export interface Challenge {
 
 export interface ChallengeResult {
   challengeId: string;
+  challengeType: ChallengeType;
+  instruction: string;
+  question?: string;
   userAnswer: number[] | string | number | string[];
   correctAnswer: number[] | string | number | string[];
   isCorrect: boolean;

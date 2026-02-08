@@ -30,7 +30,7 @@ import { StorageService } from '../../services/storage.service';
             <div class="result-info">
               <span class="challenge-number">Challenge {{ i + 1 }}</span>
               <span class="challenge-description">{{
-                getChallengeDescription(result.challengeId)
+                getChallengeDescription(result)
               }}</span>
             </div>
             <div
@@ -224,16 +224,11 @@ export class ResultComponent implements OnInit {
     return Math.round((this.score / this.totalChallenges) * 100);
   }
 
-  getChallengeDescription(challengeId: string): string {
-    const descriptions: { [key: string]: string } = {
-      'traffic-lights-1': 'Select all images containing traffic lights',
-      'cars-1': 'Select all images with cars',
-      'buildings-1': 'Select all images with buildings',
-      'challenge-1': 'Select all images containing traffic lights',
-      'challenge-2': 'Select all images with cars',
-      'challenge-3': 'Select all images with buildings',
-    };
-    return descriptions[challengeId] || 'Image selection challenge';
+  getChallengeDescription(result: ChallengeResult): string {
+    if (result.question) {
+      return result.question;
+    }
+    return result.instruction;
   }
 
   goHome() {
