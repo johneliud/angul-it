@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -7,7 +8,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <header class="header">
-      <div class="logo">AngulIt</div>
+      <div class="logo" (click)="goHome()">AngulIt</div>
       <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
         <span *ngIf="!isDark">🌙</span>
         <span *ngIf="isDark">☀️</span>
@@ -34,6 +35,12 @@ import { CommonModule } from '@angular/common';
       font-size: 1.5rem;
       font-weight: 700;
       color: var(--primary);
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .logo:hover {
+      opacity: 0.8;
     }
 
     .theme-toggle {
@@ -58,6 +65,12 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent {
   isDark = false;
+
+  constructor(private router: Router) {}
+
+  goHome() {
+    this.router.navigate(['/home']);
+  }
 
   toggleTheme() {
     this.isDark = !this.isDark;
