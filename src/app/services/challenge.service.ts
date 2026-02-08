@@ -226,6 +226,9 @@ export class ChallengeService {
   createResult(challenge: Challenge, userAnswer: number[] | string | number | string[]): ChallengeResult {
     return {
       challengeId: challenge.id,
+      challengeType: challenge.type,
+      instruction: challenge.instruction,
+      question: challenge.question,
       userAnswer,
       correctAnswer: challenge.correctAnswers,
       isCorrect: this.validateAnswer(challenge, userAnswer),
