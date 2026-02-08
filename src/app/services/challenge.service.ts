@@ -61,11 +61,7 @@ export class ChallengeService {
     }
   ];
 
-  private mathChallenges: Challenge[] = [];
-
-  constructor(private formValidationService: FormValidationService) {
-    this.mathChallenges = this.generateMathChallenges(3);
-  }
+  constructor(private formValidationService: FormValidationService) {}
 
   private generateMathChallenges(count: number): Challenge[] {
     const challenges: Challenge[] = [];
@@ -176,7 +172,7 @@ export class ChallengeService {
     
     const allChallenges = [
       ...shuffledImageChallenges,
-      ...this.mathChallenges,
+      ...this.generateMathChallenges(3),
       ...shuffledColorChallenges
     ];
     
